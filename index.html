@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#11110f">
+  <title>POP! — Your links, your domain</title>
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:wght@400;500;600;700;800&display=swap");
+
+    :root {
+      --ink: #11110f;
+      --panel: #1a1a17;
+      --paper: #f4ff43;
+      --white: #f7f7f2;
+      --muted: #aaa99f;
+      --pink: #ff5277;
+      --line: rgba(255,255,255,.14);
+      --display: "Archivo Black", Impact, sans-serif;
+      --body: "DM Sans", system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--white);
+      background:
+        radial-gradient(ellipse at 80% 10%, rgba(255,82,119,.12), transparent 32rem),
+        radial-gradient(ellipse at 10% 90%, rgba(244,255,67,.07), transparent 30rem),
+        var(--ink);
+      font-family: var(--body);
+    }
+
+    button, input, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+
+    header {
+      width: min(1100px, calc(100% - 40px));
+      height: 76px;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .logo {
+      color: var(--white);
+      font: 2rem var(--display);
+      letter-spacing: -2px;
+      text-decoration: none;
+    }
+    .logo span { color: var(--paper); }
+    .header-right { display: flex; align-items: center; gap: 14px; }
+    .header-note {
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .button {
+      min-height: 44px;
+      padding: 0 18px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: var(--ink);
+      background: var(--paper);
+      font-weight: 800;
+      transition: transform .2s, background .2s;
+    }
+    .button:hover { transform: translateY(-2px); background: #fff; }
+    .button.secondary {
+      color: var(--white);
+      border-color: var(--line);
+      background: transparent;
+    }
+    .button.secondary:hover { border-color: var(--paper); background: rgba(244,255,67,.08); }
+    .button.danger { color: white; border-color: rgba(255,82,119,.45); background: rgba(255,82,119,.12); }
+
+    main { width: min(1100px, calc(100% - 40px)); margin: auto; }
+
+    .auth-wrap {
+      min-height: calc(100vh - 120px);
+      display: grid;
+      place-items: center;
+      padding: 55px 0;
+    }
+
+    .auth-card, .editor, .preview {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+      box-shadow: 0 24px 80px rgba(0,0,0,.25);
+    }
+
+    .auth-card { width: min(460px, 100%); padding: 32px; }
+    .eyebrow {
+      color: var(--paper);
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    h1, h2, p { margin-top: 0; }
+    h1 {
+      margin: 14px 0 10px;
+      font: clamp(2.8rem, 9vw, 4.4rem)/.95 var(--display);
+      letter-spacing: -.06em;
+    }
+    h1 span { color: var(--paper); }
+    .subtext { color: var(--muted); line-height: 1.65; }
+
+    .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 24px 0; }
+    .tab {
+      min-height: 42px;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      font-weight: 700;
+    }
+    .tab.active { color: var(--ink); border-color: var(--paper); background: var(--paper); }
+
+    label {
+      display: block;
+      margin: 16px 0 7px;
+      color: #deded6;
+      font-size: .82rem;
+      font-weight: 700;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      color: var(--white);
+      outline: none;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: rgba(0,0,0,.25);
+    }
+    input:focus, textarea:focus { border-color: var(--paper); }
+    textarea { min-height: 90px; resize: vertical; }
+    .form-error { min-height: 20px; margin: 12px 0 0; color: #ff829b; font-size: .82rem; }
+    .full { width: 100%; margin-top: 10px; }
+    .demo-note { margin: 18px 0 0; color: #77776f; font-size: .72rem; line-height: 1.5; }
+
+    .dashboard { padding: 48px 0 70px; }
+    .welcome {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+    .welcome h1 { margin-bottom: 8px; }
+    .welcome p { margin: 0; color: var(--muted); }
+    .dashboard-grid { display: grid; grid-template-columns: 1fr .85fr; gap: 20px; align-items: start; }
+    .editor, .preview { padding: 24px; }
+    .section-title { margin-bottom: 5px; font-size: 1.05rem; }
+    .section-subtitle { margin-bottom: 20px; color: var(--muted); font-size: .83rem; line-height: 1.5; }
+    .domain-row { display: flex; gap: 8px; align-items: center; }
+    .domain-row input { min-width: 0; }
+    .suffix { flex: 0 0 auto; color: var(--muted); font-size: .85rem; }
+    .links-list { display: grid; gap: 10px; margin-top: 12px; }
+    .link-editor {
+      display: grid;
+      grid-template-columns: 1fr 1fr 40px;
+      gap: 8px;
+      align-items: center;
+    }
+    .link-editor input { padding: 11px; font-size: .85rem; }
+    .remove-link {
+      width: 40px;
+      height: 40px;
+      color: var(--pink);
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      background: transparent;
+      font-size: 1.2rem;
+    }
+    .editor-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 20px; }
+    .editor-actions .button { flex: 1; }
+
+    .preview {
+      position: sticky;
+      top: 20px;
+      min-height: 400px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse at 90% 0%, rgba(255,82,119,.15), transparent 18rem),
+        #151512;
+    }
+    .preview-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .preview-content { padding: 42px 8px 12px; }
+    .preview-content h2 {
+      margin: 0 0 12px;
+      font: clamp(2.7rem, 6vw, 4.5rem)/.9 var(--display);
+      letter-spacing: -.07em;
+      overflow-wrap: anywhere;
+    }
+    .preview-content h2 span { color: var(--paper); }
+    .preview-bio { color: #c5c4bb; line-height: 1.65; white-space: pre-wrap; }
+    .preview-links { display: grid; gap: 10px; margin-top: 24px; }
+    .preview-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 56px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      color: var(--white);
+      background: rgba(255,255,255,.04);
+      overflow-wrap: anywhere;
+    }
+    .preview-link:hover { border-color: var(--paper); }
+    .preview-link span:last-child { color: var(--paper); }
+    .empty-preview { color: var(--muted); font-size: .85rem; }
+    .domain-url { margin-top: 20px; color: var(--muted); font-size: .75rem; }
+    .domain-url strong { color: var(--paper); }
+
+    footer {
+      width: min(1100px, calc(100% - 40px));
+      margin: auto;
+      padding: 18px 0 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .72rem;
+      text-align: center;
+    }
+    footer span { color: var(--paper); }
+
+    @media (max-width: 780px) {
+      .header-note { display: none; }
+      .dashboard-grid { grid-template-columns: 1fr; }
+      .preview { position: static; }
+      .welcome { align-items: start; flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      header, main, footer { width: min(100% - 28px, 1100px); }
+      .auth-card, .editor, .preview { padding: 20px; }
+      .link-editor { grid-template-columns: 1fr 1fr 36px; gap: 6px; }
+      .link-editor input { padding: 10px 8px; font-size: .75rem; }
+      .remove-link { width: 36px; height: 38px; }
+      .domain-row { flex-wrap: wrap; }
+      .domain-row input { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="logo" href="#" aria-label="POP home">POP<span>!</span></a>
+    <div class="header-right">
+      <span class="header-note">Your links. Your domain.</span>
+      <button id="logoutButton" class="button secondary hidden" type="button">Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="authView" class="auth-wrap">
+      <div class="auth-card">
+        <div class="eyebrow">Your corner of the internet</div>
+        <h1>MAKE IT<br><span>POP!</span></h1>
+        <p class="subtext">Sign in or create an account to build your own POP Domain and bring all your links together.</p>
+
+        <div class="tabs" role="tablist" aria-label="Account access">
+          <button class="tab active" id="signupTab" type="button">Sign up</button>
+          <button class="tab" id="loginTab" type="button">Log in</button>
+        </div>
+
+        <form id="authForm">
+          <div id="nameField">
+            <label for="nameInput">Your name</label>
+            <input id="nameInput" autocomplete="name" placeholder="Alex Pop" required>
+          </div>
+          <label for="emailInput">Email</label>
+          <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required>
+          <label for="passwordInput">Password</label>
+          <input id="passwordInput" type="password" autocomplete="new-password" minlength="6" placeholder="At least 6 characters" required>
+          <p id="authError" class="form-error" aria-live="polite"></p>
+          <button id="authSubmit" class="button full" type="submit">Create account →</button>
+        </form>
+        <p class="demo-note">Demo only: accounts are stored in this browser. Don’t use a real password here.</p>
+      </div>
+    </section>
+
+    <section id="dashboardView" class="dashboard hidden">
+      <div class="welcome">
+        <div>
+          <div class="eyebrow">POP Domain studio</div>
+          <h1>LET'S MAKE<br><span>YOUR POP!</span></h1>
+          <p id="welcomeText">Customize your page, then save your changes.</p>
+        </div>
+        <button id="viewDomainButton" class="button secondary" type="button">Open my POP Domain ↗</button>
+      </div>
+
+      <div class="dashboard-grid">
+        <section class="editor">
+          <h2 class="section-title">Build your page</h2>
+          <p class="section-subtitle">Choose your domain name, add a bio, and share your favorite links.</p>
+
+          <label for="domainInput">POP Domain name</label>
+          <div class="domain-row">
+            <input id="domainInput" maxlength="24" placeholder="yourname" autocomplete="off">
+            <span class="suffix">.pop</span>
+          </div>
+
+          <label for="bioInput">Short bio</label>
+          <textarea id="bioInput" maxlength="180" placeholder="A little about you..."></textarea>
+
+          <label>Your links</label>
+          <div id="linksList" class="links-list"></div>
+
+          <div class="editor-actions">
+            <button id="addLinkButton" class="button secondary" type="button">＋ Add a link</button>
+            <button id="saveButton" class="button" type="button">Save my POP Domain</button>
+          </div>
+          <p id="saveMessage" class="form-error" aria-live="polite"></p>
+        </section>
+
+        <aside class="preview" aria-label="Live page preview">
+          <div class="preview-label"><span>Live preview</span><span>POP! ✳</span></div>
+          <div class="preview-content">
+            <h2 id="previewName">YOUR<br><span>NAME!</span></h2>
+            <p id="previewBio" class="preview-bio">Your bio will show up here.</p>
+            <div id="previewLinks" class="preview-links"></div>
+            <div class="domain-url">Your address: <strong id="previewDomain">yourname.pop</strong></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer>One page. All the good stuff. <span>Made with POP!</span></footer>
+
+  <script>
+    (() => {
+      const USERS_KEY = "pop_demo_users_v1";
+      const SESSION_KEY = "pop_demo_session_v1";
+
+      const $ = (id) => document.getElementById(id);
+      const authView = $("authView");
+      const dashboardView = $("dashboardView");
+      const nameField = $("nameField");
+      const nameInput = $("nameInput");
+      const emailInput = $("emailInput");
+      const passwordInput = $("passwordInput");
+      const authError = $("authError");
+      const authSubmit = $("authSubmit");
+      const logoutButton = $("logoutButton");
+      const linksList = $("linksList");
+
+      let mode = "signup";
+      let currentUser = null;
+      let domainSaved = false;
+
+      function getUsers() {
+        try { return JSON.parse(localStorage.getItem(USERS_KEY) || "{}"); }
+        catch { return {}; }
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        const signup = mode === "signup";
+        $("signupTab").classList.toggle("active", signup);
+        $("loginTab").classList.toggle("active", !signup);
+        nameField.classList.toggle("hidden", !signup);
+        nameInput.required = signup;
+        passwordInput.autocomplete = signup ? "new-password" : "current-password";
+        authSubmit.textContent = signup ? "Create account →" : "Log in →";
+        authError.textContent = "";
+      }
+
+      function showAuth() {
+        currentUser = null;
+        authView.classList.remove("hidden");
+        dashboardView.classList.add("hidden");
+        logoutButton.classList.add("hidden");
+      }
+
+      function showDashboard(user) {
+        currentUser = user;
+        authView.classList.add("hidden");
+        dashboardView.classList.remove("hidden");
+        logoutButton.classList.remove("hidden");
+        $("welcomeText").textContent = `Welcome, ${user.name}. Customize your page, then save your changes.`;
+        loadDomain();
+      }
+
+      function loadDomain() {
+        const domain = currentUser.domain || {
+          slug: slugify(currentUser.name),
+          bio: "",
+          links: []
+        };
+
+        $("domainInput").value = domain.slug || "";
+        $("bioInput").value = domain.bio || "";
+        linksList.innerHTML = "";
+
+        (domain.links || []).forEach((link) => addLinkRow(link.title, link.url));
+        if (!domain.links || domain.links.length === 0) addLinkRow("", "");
+
+        domainSaved = Boolean(currentUser.domain);
+        $("saveMessage").textContent = domainSaved ? "Your POP Domain is saved." : "";
+        updatePreview();
+      }
+
+      function slugify(value) {
+        return value.toLowerCase().trim()
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 24);
+      }
+
+      function addLinkRow(title = "", url = "") {
+        const row = document.createElement("div");
+        row.className = "link-editor";
+
+        const titleInput = document.createElement("input");
+        titleInput.placeholder = "Link title";
+        titleInput.maxLength = 50;
+        titleInput.value = title;
+        titleInput.setAttribute("aria-label", "Link title");
+
+        const urlInput = document.createElement("input");
+        urlInput.placeholder = "https://example.com";
+        urlInput.type = "url";
+        urlInput.value = url;
+        urlInput.setAttribute("aria-label", "Link URL");
+
+        const remove = document.createElement("button");
+        remove.className = "remove-link";
+        remove.type = "button";
+        remove.textContent = "×";
+        remove.setAttribute("aria-label", "Remove link");
+        remove.addEventListener("click", () => {
+          row.remove();
+          if (!linksList.children.length) addLinkRow("", "");
+          updatePreview();
+        });
+
+        titleInput.addEventListener("input", updatePreview);
+        urlInput.addEventListener("input", updatePreview);
+        row.append(titleInput, urlInput, remove);
+        linksList.appendChild(row);
+        updatePreview();
+      }
+
+      function readLinks() {
+        return [...linksList.querySelectorAll(".link-editor")]
+          .map((row) => {
+            const inputs = row.querySelectorAll("input");
+            return { title: inputs[0].value.trim(), url: inputs[1].value.trim() };
+          })
+          .filter((link) => link.title && link.url);
+      }
+
+      function updatePreview() {
+        const name = currentUser?.name || "Your Name";
+        const words = name.trim().split(/\s+/);
+        $("previewName").innerHTML = `${escapeHTML(words[0] || "YOUR")}<br><span>${escapeHTML(words.slice(1).join(" ") || "NAME")}!</span>`;
+        $("previewBio").textContent = $("bioInput").value.trim() || "Your bio will show up here.";
+
+        const slug = slugify($("domainInput").value) || "yourname";
+        $("previewDomain").textContent = `${slug}.pop`;
+
+        const previewLinks = $("previewLinks");
+        previewLinks.replaceChildren();
+        const links = readLinks();
+
+        if (!links.length) {
+          const empty = document.createElement("p");
+          empty.className = "empty-preview";
+          empty.textContent = "Your links will appear here.";
+          previewLinks.appendChild(empty);
+          return;
+        }
+
+        links.forEach((link) => {
+          const anchor = document.createElement("a");
+          anchor.className = "preview-link";
+          anchor.href = safeUrl(link.url);
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+
+          const title = document.createElement("span");
+          title.textContent = link.title;
+          const arrow = document.createElement("span");
+          arrow.textContent = "↗";
+          anchor.append(title, arrow);
+          previewLinks.appendChild(anchor);
+        });
+      }
+
+      function safeUrl(value) {
+        try {
+          const url = new URL(value);
+          return ["http:", "https:"].includes(url.protocol) ? url.href : "#";
+        } catch {
+          return "#";
+        }
+      }
+
+      function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        }[char]));
+      }
+
+      $("signupTab").addEventListener("click", () => setMode("signup"));
+      $("loginTab").addEventListener("click", () => setMode("login"));
+
+      $("authForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        authError.textContent = "";
+
+        const email = emailInput.value.trim().toLowerCase();
+        const password = passwordInput.value;
+        const users = getUsers();
+
+        if (mode === "signup") {
+          const name = nameInput.value.trim();
+          if (!name) return authError.textContent = "Please enter your name.";
+          if (users[email]) return authError.textContent = "An account with that email already exists.";
+
+          const user = { name, email, password };
+          users[email] = user;
+          localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          localStorage.setItem(SESSION_KEY, email);
+          showDashboard(user);
+        } else {
+          const user = users[email];
+          if (!user || user.password !== password) {
+            return authError.textContent = "Email or password doesn’t match.";
+          }
+          localStorage.setItem(SESSION_KEY, email);
+          showDashboard(user);
+        }
+
+        $("authForm").reset();
+      });
+
+      $("addLinkButton").addEventListener("click", () => addLinkRow("", ""));
+      $("domainInput").addEventListener("input", (event) => {
+        event.target.value = event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "").slice(0, 24);
+        updatePreview();
+      });
+      $("bioInput").addEventListener("input", updatePreview);
+
+      $("saveButton").addEventListener("click", () => {
+        const slug = slugify($("domainInput").value);
+        if (!slug) {
+          $("saveMessage").textContent = "Choose a POP Domain name first.";
+          $("domainInput").focus();
+          return;
+        }
+
+        const links = readLinks();
+        const invalidLink = [...linksList.querySelectorAll(".link-editor input[type=url]")]
+          .some((input) => input.value.trim() && !safeUrl(input.value.trim()).startsWith("http"));
+
+        if (invalidLink) {
+          $("saveMessage").textContent = "Please use valid links starting with https:// or http://.";
+          return;
+        }
+
+        const users = getUsers();
+        const user = users[currentUser.email];
+        user.domain = {
+          slug,
+          bio: $("bioInput").value.trim(),
+          links
+        };
+        users[currentUser.email] = user;
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
+        currentUser = user;
+        domainSaved = true;
+        $("saveMessage").textContent = `Saved! Your POP Domain is ${slug}.pop`;
+        updatePreview();
+      });
+
+      $("viewDomainButton").addEventListener("click", () => {
+        if (!domainSaved) {
+          $("saveMessage").textContent = "Save your POP Domain before opening it.";
+          return;
+        }
+        $("saveMessage").textContent = "Your preview is live on this page. A real public domain needs hosting.";
+        $("previewDomain").scrollIntoView({ behavior: "smooth", block: "center" });
+      });
+
+      logoutButton.addEventListener("click", () => {
+        localStorage.removeItem(SESSION_KEY);
+        showAuth();
+        setMode("login");
+      });
+
+      const savedEmail = localStorage.getItem(SESSION_KEY);
+      const savedUser = savedEmail && getUsers()[savedEmail];
+      if (savedUser) showDashboard(savedUser);
+      else showAuth();
+    })();
+  </script>
+</body>
+</html>
